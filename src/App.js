@@ -1,7 +1,9 @@
+//get albums from Spotify
 //Importing our dependencies and styles
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'spotify-web-api-js';
 
 /* Importing...
 "Container" to contain everything on screen, 
@@ -53,6 +55,7 @@ function App() {
   //SEARCH
   //Search function needs to be asynchronous because inside the function there will be many fetch statements that need to be called in turn and need async if you use await
   async function search(){
+    try{
     //console.log("Search for " + searchInput);
 
     //Artist ID - Get request with search to get the Artist ID
@@ -68,8 +71,17 @@ function App() {
       .then(response => response.json())
       //.then(data => console.log(data)) <--- to check info in the console to see what to call
       //go to artist, items, and call the first name at position 0 as it's the likeliest match and get their ID
-      .then(data=> {return data.artists.items[0].id})
       //console.log("Artist ID = " + artistID); //<---check to see if it's fetching the artist ID
+      .then(data => {
+        // Check to see if artist exists and has something to return
+        if (data.artists && data.artists.items && data.artists.items.length > 0) {
+          return data.artists.items[0].id;
+        } else {
+          // If nothing found, return an error message
+          throw new Error('Artist not found');
+        }
+      });
+      
  
 
     //Display the albums for the artist to the user
@@ -85,8 +97,10 @@ function App() {
       }**/
       })
 
+    }catch (error) {
+      console.error('Error found:', error.message);
   }
-
+  }
 
   
   
@@ -117,21 +131,21 @@ function App() {
       <Button>Login with Spotify</Button>
       
       <Container>
-        <Row className='mx-2 row-cols-4'>
-          {albums.map((album, i) => {
-            return (
-              <Card>
-                <Card.Img src = {album.images[0].url} />
-                  <Card.Body>
-                    <Card.Title>
-                      {album.name}
-                    </Card.Title>
-                  </Card.Body>
-               </Card>
-            )
-          })}
-        </Row> 
-      </Container>
+      <Row className='mx-2 row-cols-4'>
+        {albums.map((album, i) => {
+          return (
+            <Card key={album.id}> 
+              <Card.Img src={album.images[0].url} />
+              <Card.Body>
+                <Card.Title>
+                  {album.name}
+                </Card.Title>
+              </Card.Body>
+            </Card>
+          );
+        })}
+    </Row>
+    </Container>
       
     </div>
   );
