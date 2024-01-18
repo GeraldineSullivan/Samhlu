@@ -1,3 +1,6 @@
+// I followed this tutorial and attempted to add some error handling myself
+//Building a Spotify API Searcher in React: https://www.youtube.com/watch?v=1PWDxgqLmDA
+
 //get albums from Spotify
 //Importing our dependencies and styles
 import logo from './logo.svg';
